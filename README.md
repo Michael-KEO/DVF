@@ -64,14 +64,9 @@ streamlit run main.py
 
 ## 🚧 Résolution des problèmes courants
 
-- Si l'erreur "Données insuffisantes" apparaît, vérifier que :
-  - La base de données contient des données pour le département/année sélectionnés
-  - Les colonnes Surface_reelle_bati et Mutation_Valeur_fonciere ne sont pas nulles
-  - La limite de données n'est pas trop basse
+- 
 
 ## 📝 Notes
 
-- Les données sont mises en cache pendant 30 minutes
-- La limite par défaut est de 5000 enregistrements
-- L'affichage de la carte est limité à 1000 points pour des raisons de performance
+- 
 ```
