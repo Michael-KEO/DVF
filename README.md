@@ -39,6 +39,27 @@ DB_USER=utilisateur
 DB_PASSWORD=mot_de_passe
 ```
 
+Initialiser la base de données :
+```bash
+mysql -u votre_utilisateur -p nom_base < db/schema_jmerise.sql
+```
+
+Ou via un client MySQL :
+Connectez-vous à votre serveur MySQL
+Créez une base de données : 
+```sql
+CREATE DATABASE nom_base;
+```
+Sélectionnez la base :
+```sql
+USE nom_base;
+```
+Exécutez le script :
+```sql
+SOURCE chemin/vers/schema_jmerise.sql;
+```
+
+
 ## 🏃‍♂️ Lancement
 
 1. Activer l'environnement virtuel si ce n'est pas déjà fait
