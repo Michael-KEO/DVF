@@ -42,7 +42,7 @@ with st.sidebar:
     annees = load_annees()
     annee = st.selectbox("📆 Choisir une année", annees if annees else [])
 
-    limite = st.slider("Limite de données", 100, 600000, 5000, 100)
+    limite = st.slider("Limite de données", 100, 600000, 600000, 100)
     st.caption(f"Limite: {limite} enregistrements")
 
     st.info("Utilisez une limite plus basse pour des temps de chargement plus rapides")

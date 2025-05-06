@@ -30,7 +30,8 @@ pip install -r requirements.txt
 
 1. Vérifier que MySQL est en cours d'exécution
 
-2. Créer un fichier `.env` à la racine du projet :
+2. Créer un fichier `.env` à la racine du projet en suivant le modèle dans `.env.example` :
+```bash
 ```env
 DB_HOST=ip_mysql
 DB_NAME=nom_base

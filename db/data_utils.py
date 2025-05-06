@@ -3,16 +3,22 @@ from mysql.connector import Error
 import pandas as pd
 import time
 from functools import lru_cache
+import os
+from dotenv import load_dotenv
+
+# Chargement des variables d'environnement
+load_dotenv()
 
 
 def create_db_connection():
     """Crée une connexion à la base de données MySQL"""
+
     try:
         connection = mysql.connector.connect(
-            host='172.25.16.1',
-            database='dvf_test',
-            user='root',
-            password='Dertyxx@6624!',
+            host=os.getenv('DB_HOST'),
+            database=os.getenv('DB_NAME'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
             # Paramètres d'optimisation de connexion
             use_pure=True,  # Utilise l'implémentation Python pure pour meilleure stabilité
             pool_size=5,  # Taille du pool de connexions
