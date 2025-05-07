@@ -161,3 +161,11 @@ cython_debug/
 #.idea/
 
 /tests/
+
+#tous les fichiers contenant le mot test
+test
+test_*
+*_test
+*_tests
+test_*
+

@@ -135,12 +135,26 @@ if load_button or 'data_loaded' in st.session_state:
                 st.plotly_chart(fig1, use_container_width=True)
 
             with tab2:
-                # Debug des données dans l'onglet
-                st.write("### Informations de debug pour le calcul du prix au m²")
-                st.write("Colonnes disponibles:", df.columns.tolist())
-                st.write("Valeurs nulles Surface:", df['Surface_reelle_bati'].isna().sum())
-                st.write("Valeurs nulles Prix:", df['Mutation_Valeur_fonciere'].isna().sum())
-                st.write("Valeurs zéro Surface:", (df['Surface_reelle_bati'] == 0).sum())
+                # Dans le traitement du DataFrame
+                if not df.empty:
+                    # Convertir toutes les colonnes numériques en float
+                    df['Surface_reelle_bati'] = pd.to_numeric(df['Surface_reelle_bati'], errors='coerce')
+                    df['Mutation_Valeur_fonciere'] = pd.to_numeric(df['Mutation_Valeur_fonciere'], errors='coerce')
+                    df['Surface_totale_carrez'] = pd.to_numeric(df['Surface_totale_carrez'], errors='coerce')
+
+                    # Calcul du prix au m² en gérant les types
+                    df['Prix_m2'] = df.apply(
+                        lambda x: (
+                            x['Mutation_Valeur_fonciere'] / float(x['Surface_totale_carrez'])
+                            if x['Type_local'] == 'Appartement' and pd.notna(x['Surface_totale_carrez']) and x[
+                                'Surface_totale_carrez'] > 0
+                            else x['Mutation_Valeur_fonciere'] / float(x['Surface_reelle_bati'])
+                            if x['Type_local'] == 'Maison' and pd.notna(x['Surface_reelle_bati']) and x[
+                                'Surface_reelle_bati'] > 0
+                            else None
+                        ),
+                        axis=1
+                    )
 
                 # Prix moyen au m² par commune
                 if 'Prix_m2' in df.columns:

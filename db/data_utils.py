@@ -80,26 +80,25 @@ def get_data_with_joins(code_departement=None, annee=None, limit=None):
 
         # Requête SQL optimisée avec jointures - adaptée à votre structure de table
         query = f"""
-        SELECT 
-            b.ID_Bien, b.ID_Parcelle, b.Type_local, b.Surface_reelle_bati, b.Surface_terrain, b.Nombre_pieces_principales,
-            l.Adresse_numero, l.Adresse_suffixe, l.Adresse_nom_voie, 
-            l.Code_departement, l.Code_postal, l.Code_commune, l.Nom_commune, l.Longitude, l.Latitude,
-            m.ID_Mutation, m.Date_mutation, m.Numero_disposition, m.Nature_mutation,
-            mb.Valeur_fonciere,
-            (SELECT COUNT(*) FROM LOT lt WHERE lt.ID_Bien = b.ID_Bien) AS Nombre_lots
-        FROM 
-            BIEN b
-        JOIN 
-            LOCALISATION l ON b.ID_Localisation = l.ID_Localisation
-        JOIN 
-            MUTATION_BIEN mb ON b.ID_Bien = mb.ID_Bien
-        JOIN 
-            MUTATION m ON mb.ID_Mutation = m.ID_Mutation
-        {where_sql}
-        ORDER BY m.Date_mutation DESC
-        {limit_sql}
-        """
-
+            SELECT 
+                b.ID_Bien, b.ID_Parcelle, b.Type_local, b.Surface_reelle_bati, b.Surface_terrain, b.Nombre_pieces_principales,
+                l.Adresse_numero, l.Adresse_suffixe, l.Adresse_nom_voie, 
+                l.Code_departement, l.Code_postal, l.Code_commune, l.Nom_commune, l.Longitude, l.Latitude,
+                m.ID_Mutation, m.Date_mutation, m.Numero_disposition, m.Nature_mutation,
+                mb.Valeur_fonciere,
+                (SELECT SUM(Surface_carree) FROM LOT WHERE LOT.ID_Bien = b.ID_Bien) AS Surface_totale_carrez
+            FROM 
+                BIEN b
+            JOIN 
+                LOCALISATION l ON b.ID_Localisation = l.ID_Localisation
+            JOIN 
+                MUTATION_BIEN mb ON b.ID_Bien = mb.ID_Bien
+            JOIN 
+                MUTATION m ON mb.ID_Mutation = m.ID_Mutation
+            {where_sql}
+            ORDER BY m.Date_mutation DESC
+            {limit_sql}
+            """
         return execute_query(connection, query, params)
     finally:
         if connection.is_connected():
