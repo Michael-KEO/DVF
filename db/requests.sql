@@ -81,3 +81,24 @@ JOIN MUTATION_BIEN mb ON b.ID_Bien = mb.ID_Bien
 GROUP BY b.ID_Bien, b.Type_local, l.Code_departement, l.Nom_commune, b.Surface_reelle_bati, mb.Valeur_fonciere
 HAVING COUNT(DISTINCT lot.ID_Lot) > 1
 ORDER BY nombre_lots DESC, mb.Valeur_fonciere DESC;
+
+
+
+SELECT COUNT(*)                   as Nombre_ventes_75,
+                         SUM(MB.Valeur_fonciere)    as Valeur_fonciere_totale_75,
+                         AVG(
+                                 CASE
+                                     WHEN B.Surface_reelle_bati > 0 AND MB.Valeur_fonciere > 0
+                                         THEN MB.Valeur_fonciere / B.Surface_reelle_bati
+                                     ELSE NULL
+                                     END
+                         )                          as Prix_m2_moyen_75,
+                         AVG(B.Surface_reelle_bati) as Surface_moyenne_75
+                  FROM BIEN B
+                           JOIN LOCALISATION L ON B.ID_Localisation = L.ID_Localisation
+                           JOIN MUTATION_BIEN MB ON B.ID_Bien = MB.ID_Bien
+                           JOIN MUTATION M ON MB.ID_Mutation = M.ID_Mutation
+                  WHERE L.Code_departement = '75'
+                    AND YEAR(M.Date_mutation) IN (2020, 2022, 2024)
+                    AND B.Surface_reelle_bati > 0
+                    AND MB.Valeur_fonciere > 0
