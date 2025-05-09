@@ -16,6 +16,8 @@ Structure :
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import time
+
 
 # Import des fonctions de récupération de données depuis le module data_utils_test
 # Ces fonctions utilisent @st.cache_data pour mettre en cache leurs résultats.
@@ -93,19 +95,54 @@ if not selected_natures_display: # Si aucune nature n'est sélectionnée
 # Ces fonctions sont appelées une fois (par session utilisateur, ou jusqu'à expiration du cache TTL).
 # Elles récupèrent les données pour les DEFAULT_YEARS et pour les départements 75 et 33.
 # Les filtres de la sidebar seront appliqués sur ces DataFrames en mémoire.
-st.info(f"Chargement des données de référence pour les années: {', '.join(map(str, DEFAULT_YEARS))}...")
+# Au début du script, après la configuration de la page
+if 'data_loaded' not in st.session_state:
+    loading_placeholder = st.empty()
+    success_placeholder = st.empty()
 
-df_kpis_full = get_kpis_compare()
-df_top10_full = get_top10_communes_prix_m2()
-df_top_valeur_full = get_top_communes_valeur()
-df_prix_mois_full = get_prix_m2_par_mois_compare()
-df_ventes_mois_full = get_ventes_par_mois_compare()
-df_correlation_full = get_correlation_surface_prix()
-df_transactions_full = get_transactions_par_nature()
-df_evolution_prix_full = get_evolution_prix_m2() # Note: c'est un alias de get_prix_m2_par_mois_compare
-df_typologie_full = get_prix_m2_par_type_local_compare()
+    with loading_placeholder:
+        st.info(f"Chargement des données de référence pour les années: {', '.join(map(str, DEFAULT_YEARS))}...")
 
-st.success("Données de référence chargées.")
+    # Chargement des données
+    df_kpis_full = get_kpis_compare()
+    df_top10_full = get_top10_communes_prix_m2()
+    df_top_valeur_full = get_top_communes_valeur()
+    df_prix_mois_full = get_prix_m2_par_mois_compare()
+    df_ventes_mois_full = get_ventes_par_mois_compare()
+    df_correlation_full = get_correlation_surface_prix()
+    df_transactions_full = get_transactions_par_nature()
+    df_evolution_prix_full = get_evolution_prix_m2()
+    df_typologie_full = get_prix_m2_par_type_local_compare()
+
+    with success_placeholder:
+        st.success("Données de référence chargées.")
+
+    st.session_state.data_loaded = True
+    st.session_state.df_kpis_full = df_kpis_full
+    st.session_state.df_top10_full = df_top10_full
+    st.session_state.df_top_valeur_full = df_top_valeur_full
+    st.session_state.df_prix_mois_full = df_prix_mois_full
+    st.session_state.df_ventes_mois_full = df_ventes_mois_full
+    st.session_state.df_correlation_full = df_correlation_full
+    st.session_state.df_transactions_full = df_transactions_full
+    st.session_state.df_evolution_prix_full = df_evolution_prix_full
+    st.session_state.df_typologie_full = df_typologie_full
+
+    # Efface les messages après 2 secondes
+    time.sleep(2)
+    loading_placeholder.empty()
+    success_placeholder.empty()
+else:
+    # Utilise les données déjà chargées depuis session_state
+    df_kpis_full = st.session_state.df_kpis_full
+    df_top10_full = st.session_state.df_top10_full
+    df_top_valeur_full = st.session_state.df_top_valeur_full
+    df_prix_mois_full = st.session_state.df_prix_mois_full
+    df_ventes_mois_full = st.session_state.df_ventes_mois_full
+    df_correlation_full = st.session_state.df_correlation_full
+    df_transactions_full = st.session_state.df_transactions_full
+    df_evolution_prix_full = st.session_state.df_evolution_prix_full
+    df_typologie_full = st.session_state.df_typologie_full
 
 # --- APPLICATION PRINCIPALE ---
 st.title("🏢 Analyse DVF - Comparaison Paris (75) vs Gironde (33)")

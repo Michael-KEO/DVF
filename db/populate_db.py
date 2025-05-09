@@ -36,7 +36,7 @@ DB_CONFIG = {
 }
 
 # Chemin vers le dossier contenant les fichiers CSV à importer
-CSV_FOLDER = 'csvs'  # Assurez-vous que ce dossier existe à la racine du projet ou spécifiez un chemin absolu
+CSV_FOLDER = 'csv_originaux'  # Assurez-vous que ce dossier existe à la racine du projet ou spécifiez un chemin absolu
 
 def create_db_connection():
     """
