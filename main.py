@@ -134,8 +134,23 @@ with tab_kpis:
             metrics_paris = {k: v for k, v in kpis_data.items() if '_75' in k and pd.notnull(v)}
             col_a, col_b, col_c, col_d = st.columns(4) # Colonnes pour l'affichage des métriques
             with col_a: st.metric("Nombre de ventes", f"{metrics_paris.get('Nombre_ventes_75', 0):,}")
-            with col_b: st.metric("Valeur foncière totale", f"{metrics_paris.get('Valeur_fonciere_totale_75', 0):,.0f} €")
-            with col_c: st.metric("Prix moyen au m²", f"{metrics_paris.get('Prix_m2_moyen_75', 0):,.0f} €/m²")
+            with col_b:
+                full_value = f"{metrics_paris.get('Valeur_fonciere_totale_75', 0):,.0f} €"
+                st.markdown(f"""
+                    <div title="{full_value}">
+                        <b>Valeur foncière totale</b><br/>
+                        {full_value}
+                    </div>
+                """, unsafe_allow_html=True)
+
+            with col_c:
+                full_price = f"{metrics_paris.get('Prix_m2_moyen_75', 0):,.0f} €/m²"
+                st.markdown(f"""
+                    <div title="{full_price}">
+                        <b>Prix moyen au m²</b><br/>
+                        {full_price}
+                    </div>
+                """, unsafe_allow_html=True)
             with col_d: st.metric("Surface moyenne", f"{metrics_paris.get('Surface_moyenne_75', 0):.1f} m²")
 
         with col2:
@@ -144,8 +159,22 @@ with tab_kpis:
             metrics_gironde = {k: v for k, v in kpis_data.items() if '_33' in k and pd.notnull(v)}
             col_a, col_b, col_c, col_d = st.columns(4)
             with col_a: st.metric("Nombre de ventes", f"{metrics_gironde.get('Nombre_ventes_33', 0):,}")
-            with col_b: st.metric("Valeur foncière totale", f"{metrics_gironde.get('Valeur_fonciere_totale_33', 0):,.0f} €")
-            with col_c: st.metric("Prix moyen au m²", f"{metrics_gironde.get('Prix_m2_moyen_33', 0):,.0f} €/m²")
+            with col_b:
+                full_value = f"{metrics_gironde.get('Valeur_fonciere_totale_33', 0):,.0f} €"
+                st.markdown(f"""
+                    <div title="{full_value}">
+                        <b>Valeur foncière totale</b><br/>
+                        {full_value}
+                    </div>
+                """, unsafe_allow_html=True)
+            with col_c:
+                full_price = f"{metrics_gironde.get('Prix_m2_moyen_33', 0):,.0f} €/m²"
+                st.markdown(f"""
+                    <div title="{full_price}">
+                        <b>Prix moyen au m²</b><br/>
+                        {full_price}
+                    </div>
+                """, unsafe_allow_html=True)
             with col_d: st.metric("Surface moyenne", f"{metrics_gironde.get('Surface_moyenne_33', 0):.1f} m²")
     else:
         st.warning("Données KPIs non disponibles. Vérifiez la connexion à la base de données ou les requêtes.")

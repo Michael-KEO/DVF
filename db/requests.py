@@ -147,8 +147,8 @@ def get_kpis_compare():
         dict: Un dictionnaire contenant les KPIs pour les deux départements.
     """
     kpis = {}
-    year_placeholders = ', '.join(['%s'] * len(DEFAULT_YEARS)) # Génère des %s pour chaque année
-    base_query_params = DEFAULT_YEARS # Paramètres pour les années
+    year_placeholders = ', '.join(['%s'] * len(DEFAULT_YEARS))
+    base_query_params = DEFAULT_YEARS
 
     for dep_code, dep_suffix in [('75', '_75'), ('33', '_33')]:
         query = f"""
@@ -157,24 +157,24 @@ def get_kpis_compare():
                 SUM(
                     CASE
                         WHEN B.Surface_reelle_bati > 0
-                             AND MB.Valeur_fonciere / B.Surface_reelle_bati BETWEEN 1000 AND 25000 -- Filtre prix/m² aberrant
+                             AND MB.Valeur_fonciere / B.Surface_reelle_bati BETWEEN 1000 AND 25000
                         THEN MB.Valeur_fonciere
                         ELSE NULL
                     END
                 ) AS Valeur_fonciere_totale{dep_suffix},
                 AVG(
                     CASE
-                        WHEN B.Surface_reelle_bati BETWEEN 9 AND 1000 -- Filtre surface aberrante
+                        WHEN B.Surface_reelle_bati BETWEEN 9 AND 1000
                              AND MB.Valeur_fonciere > 0
                              AND B.Surface_reelle_bati > 0
-                             AND MB.Valeur_fonciere / B.Surface_reelle_bati BETWEEN 1000 AND 25000 -- Filtre prix/m² aberrant
+                             AND MB.Valeur_fonciere / B.Surface_reelle_bati BETWEEN 1000 AND 25000
                         THEN MB.Valeur_fonciere / B.Surface_reelle_bati
                         ELSE NULL
                     END
                 ) AS Prix_m2_moyen{dep_suffix},
                 AVG(
                     CASE
-                        WHEN B.Surface_reelle_bati BETWEEN 9 AND 1000 -- Filtre surface aberrante
+                        WHEN B.Surface_reelle_bati BETWEEN 9 AND 1000
                         THEN B.Surface_reelle_bati
                         ELSE NULL
                     END
@@ -185,11 +185,9 @@ def get_kpis_compare():
             JOIN MUTATION M ON MB.ID_Mutation = M.ID_Mutation
             WHERE
                 L.Code_departement = %s
-                AND B.Surface_reelle_bati > 0
-                AND MB.Valeur_fonciere > 0
                 AND YEAR(M.Date_mutation) IN ({year_placeholders});
         """
-        params = [dep_code] + base_query_params # Combine le code département avec les années
+        params = [dep_code] + base_query_params
         df_dep = execute_query(query, tuple(params))
         if not df_dep.empty:
             kpis.update(df_dep.iloc[0].to_dict())
